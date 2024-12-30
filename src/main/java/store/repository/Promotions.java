@@ -1,7 +1,8 @@
-package store.promotion;
+package store.repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import store.promotion.Promotion;
 
 public class Promotions {
 

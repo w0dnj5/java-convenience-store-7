@@ -1,9 +1,10 @@
-package store.product;
+package store.repository;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import store.product.Product;
 
 public class Products {
 
@@ -14,5 +15,9 @@ public class Products {
         List<Product> list = products.getOrDefault(productName, new LinkedList<>());
         list.add(product);
         products.put(productName, list);
+    }
+
+    public List<Product> findProductsByName(String productName) {
+        return products.get(productName);
     }
 }
