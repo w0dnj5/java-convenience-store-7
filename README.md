@@ -1,1 +1,3 @@
-# java-convenience-store-precourse
+# 편의점
+
+
