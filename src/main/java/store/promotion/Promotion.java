@@ -22,9 +22,16 @@ public class Promotion {
         return name;
     }
 
-    public int getReceiveFreeCount(int count, LocalDate now) {
+    public int getReceiveFreeCount(LocalDate now, int count) {
         if (isInPeriod(now) && (count + get) % (buy + get) == 0) {
             return get;
+        }
+        return 0;
+    }
+
+    public int getNoPromotionApplyCount(LocalDate now, int count, int quantity) {
+        if (isInPeriod(now)) {
+            return count - (quantity / (buy + get) * (buy + get));
         }
         return 0;
     }

@@ -23,7 +23,7 @@ public class StoreService {
     public int getReceiveFreeCount(String productName, int count, LocalDate now) {
         List<Product> find = products.findProductsByName(productName);
         validate(find, count);
-        return find.stream().mapToInt(product -> product.getReceiveFreeCount(count, now)).sum();
+        return find.stream().mapToInt(product -> product.getReceiveFreeCount(now, count)).sum();
     }
 
     public void validate(List<Product> find, int count) {

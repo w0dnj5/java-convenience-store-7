@@ -13,15 +13,15 @@ import store.promotion.Promotion;
 class ProductTest {
 
     @ParameterizedTest
-    @MethodSource("productProvider")
+    @MethodSource("receiveFreeCountTestProductProvider")
     @DisplayName("구매 개수 따라 제품을 추가로 증정 받을 수 있는 지 확인")
     void getReceiveFreeCountTest(String today, Product product, int buyCount, int expectedCount) {
         LocalDate now = LocalDate.parse(today);
 
-        assertThat(product.getReceiveFreeCount(buyCount, now)).isEqualTo(expectedCount);
+        assertThat(product.getReceiveFreeCount(now, buyCount)).isEqualTo(expectedCount);
     }
 
-    static Stream<Arguments> productProvider() {
+    static Stream<Arguments> receiveFreeCountTestProductProvider() {
         return Stream.of(
                 Arguments.of("2024-12-11",
                         new Product("콜라", 1000, 10,
@@ -30,7 +30,35 @@ class ProductTest {
                         8, 1),
                 Arguments.of("2024-12-11",
                         new Product("콜라", 1000, 10, null),
-                        8, 0)
+                        8, 0),
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10, null),
+                        11, 0)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("noPromotionApplyCountTestProductProvider")
+    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인")
+    void getNoPromotionApplyCountTest(String today, Product product, int buyCount, int expectedCount) {
+        LocalDate now = LocalDate.parse(today);
+
+        assertThat(product.getNoPromotionApplyCount(now, buyCount)).isEqualTo(expectedCount);
+    }
+
+    static Stream<Arguments> noPromotionApplyCountTestProductProvider() {
+        return Stream.of(
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10,
+                                new Promotion("탄산2+1", 2, 1, LocalDate.parse("2024-01-01"),
+                                        LocalDate.parse("2024-12-31"))),
+                        12, 3),
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10, null),
+                        12, 0),
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10, null),
+                        11, 0)
         );
     }
 }
