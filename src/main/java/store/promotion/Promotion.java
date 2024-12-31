@@ -22,21 +22,21 @@ public class Promotion {
         return name;
     }
 
-    public int getReceiveFreeCount(LocalDate now, int count) {
-        if (isInPeriod(now) && (count + get) % (buy + get) == 0) {
+    public int getReceiveFreeCount(LocalDate date, int count) {
+        if (isInPeriod(date) && (count + get) % (buy + get) == 0) {
             return get;
         }
         return 0;
     }
 
-    public int getNoPromotionApplyCount(LocalDate now, int count, int quantity) {
-        if (isInPeriod(now)) {
+    public int getNoPromotionApplyCount(LocalDate date, int count, int quantity) {
+        if (isInPeriod(date)) {
             return count - (quantity / (buy + get) * (buy + get));
         }
         return 0;
     }
 
-    private boolean isInPeriod(LocalDate now) {
-        return !(now.isBefore(startDate) || now.isAfter(endDate));
+    private boolean isInPeriod(LocalDate date) {
+        return !(date.isBefore(startDate) || date.isAfter(endDate));
     }
 }

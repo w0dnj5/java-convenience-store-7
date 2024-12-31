@@ -29,16 +29,16 @@ public class Product {
         return promotion != null;
     }
 
-    public int getReceiveFreeCount(LocalDate now, int count) {
+    public int getReceiveFreeCount(LocalDate date, int count) {
         if (hasPromotion() && count <= quantity) {
-            return promotion.getReceiveFreeCount(now, count);
+            return promotion.getReceiveFreeCount(date, count);
         }
         return 0;
     }
 
-    public int getNoPromotionApplyCount(LocalDate now, int count) {
+    public int getNoPromotionApplyCount(LocalDate date, int count) {
         if (hasPromotion() && count > quantity) {
-            return promotion.getNoPromotionApplyCount(now, count, quantity);
+            return promotion.getNoPromotionApplyCount(date, count, quantity);
         }
         return 0;
     }
