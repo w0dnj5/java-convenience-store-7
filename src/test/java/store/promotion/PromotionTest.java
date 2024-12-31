@@ -32,4 +32,28 @@ class PromotionTest {
                         new Promotion("반짝할인", 1, 1, LocalDate.parse("2024-11-01"), LocalDate.parse("2024-11-30")), 9, 1)
         );
     }
+
+    @ParameterizedTest
+    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인")
+    @MethodSource("noPromotionApplyCountTestPromotionProvider")
+    void getNoPromotionApplyCountTest(String today, Promotion promotion, int buyCount, int quantity,
+                                      int expectedCount) {
+        LocalDate now = LocalDate.parse(today);
+
+        assertThat(promotion.getNoPromotionApplyCount(now, buyCount, quantity)).isEqualTo(expectedCount);
+    }
+
+    static Stream<Arguments> noPromotionApplyCountTestPromotionProvider() {
+        return Stream.of(
+                Arguments.of("2024-12-11",
+                        new Promotion("탄산2+1", 2, 1, LocalDate.parse("2024-01-01"), LocalDate.parse("2024-12-31")), 11,
+                        10, 2),
+                Arguments.of("2024-12-30",
+                        new Promotion("반짝할인", 1, 1, LocalDate.parse("2024-11-01"), LocalDate.parse("2024-11-30")), 8,
+                        10, 0),
+                Arguments.of("2024-11-11",
+                        new Promotion("반짝할인", 1, 1, LocalDate.parse("2024-11-01"), LocalDate.parse("2024-11-30")), 11,
+                        10, 1)
+        );
+    }
 }
