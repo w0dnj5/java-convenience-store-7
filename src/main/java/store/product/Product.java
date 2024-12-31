@@ -42,4 +42,17 @@ public class Product {
         }
         return 0;
     }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    @Override
+    public String toString() {
+        String contents = String.format("- %s %,3d원 %d개 ", name, price, quantity);
+        if (promotion != null) {
+            contents += promotion.toString();
+        }
+        return contents;
+    }
 }

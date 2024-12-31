@@ -39,4 +39,9 @@ public class Promotion {
     private boolean isInPeriod(LocalDate date) {
         return !(date.isBefore(startDate) || date.isAfter(endDate));
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -35,4 +35,28 @@ public class Order {
                 .mapToInt(product -> product.getNoPromotionApplyCount(date, count))
                 .sum();
     }
+
+    public String getProductName() {
+        Product product = products.stream()
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
+        return product.getName();
+    }
+
+    public void addReceiveFreeCount() {
+        Product promotionProduct = findPromotionProduct();
+        count += promotionProduct.getReceiveFreeCount(date, count);
+    }
+
+    public void dropNoPromotionApplyCount() {
+        Product promotionProduct = findPromotionProduct();
+        count -= promotionProduct.getNoPromotionApplyCount(date, count);
+    }
+
+    private Product findPromotionProduct() {
+        return products.stream()
+                .filter(Product::hasPromotion)
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
