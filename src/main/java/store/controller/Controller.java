@@ -1,15 +1,17 @@
 package store.controller;
 
+import static store.error.ErrorMessage.INVALID_ORDER_FORMAT;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import store.order.Order;
 import store.product.Product;
+import store.product.Products;
 import store.promotion.Promotion;
+import store.promotion.Promotions;
 import store.receipt.Receipt;
-import store.repository.Products;
-import store.repository.Promotions;
 import store.utils.FileHandler;
 import store.utils.FileReader;
 import store.utils.InputHandler;
@@ -18,25 +20,28 @@ import store.view.OutputView;
 
 public class Controller {
 
-    private FileHandler fileHandler;
-    private InputHandler inputHandler;
     private InputView inputView;
     private OutputView outputView;
+    private FileHandler fileHandler;
+    private InputHandler inputHandler;
+    private Promotions promotions;
+    private Products products;
 
     public void run() {
-        fileHandler = new FileHandler(new FileReader());
         inputView = new InputView();
-        inputHandler = new InputHandler();
         outputView = new OutputView();
-        Promotions promotions = new Promotions();
-        Products products = new Products();
+        fileHandler = new FileHandler(new FileReader());
+        inputHandler = new InputHandler();
+        promotions = new Promotions();
+        products = new Products();
+
         promotions.addAll(toPromotions(fileHandler.convert("src/main/resources/promotions.md")));
         products.addAll(toProducts(promotions, fileHandler.convert("src/main/resources/products.md")));
 
         do {
             outputView.showAllProducts(products);
             List<Order> orders = repeatUntilSuccess(
-                    () -> toOrders(products, inputHandler.toOrderData(inputView.requestOrders())));
+                    () -> toOrders(inputHandler.toOrderData(inputView.requestOrders())));
             orders.forEach(this::progress);
             Receipt receipt = repeatUntilSuccess(
                     () -> new Receipt(orders, inputHandler.toYesOrNo(inputView.requestMembershipApply())));
@@ -66,7 +71,7 @@ public class Controller {
                 )).toList();
     }
 
-    private List<Order> toOrders(Products products, List<Map<String, String>> data) {
+    private List<Order> toOrders(List<Map<String, String>> data) {
         try {
             return data.stream().map(map ->
                     new Order(
@@ -74,7 +79,7 @@ public class Controller {
                             Integer.parseInt(map.get("count"))
                     )).toList();
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(INVALID_ORDER_FORMAT.getMessage());
         }
     }
 
@@ -110,7 +115,7 @@ public class Controller {
             try {
                 return supplier.get();
             } catch (IllegalArgumentException e) {
-
+                outputView.showErrorMessage(e);
             }
         }
     }

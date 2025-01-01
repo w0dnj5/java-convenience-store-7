@@ -1,6 +1,8 @@
 package store.order;
 
-import camp.nextstep.edu.missionutils.DateTimes;
+import static store.error.ErrorMessage.NO_EXIST_PRODUCT;
+import static store.error.ErrorMessage.OUT_OF_STOCK;
+
 import java.time.LocalDate;
 import java.util.List;
 import store.product.Product;
@@ -15,12 +17,16 @@ public class Order {
         validate(products, count);
         this.products = products;
         this.count = count;
-        date = DateTimes.now().toLocalDate();
+        date = LocalDate.parse("2024-12-11"); // DateTimes.now().toLocalDate();
+        // 이벤트 반영을 위한 시간 조정
     }
 
     private void validate(List<Product> products, int count) {
+        if (products.isEmpty()) {
+            throw new IllegalArgumentException(NO_EXIST_PRODUCT.getMessage());
+        }
         if (products.stream().mapToInt(Product::getQuantity).sum() < count) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OUT_OF_STOCK.getMessage());
         }
     }
 

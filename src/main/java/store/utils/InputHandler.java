@@ -1,5 +1,7 @@
 package store.utils;
 
+import static store.error.ErrorMessage.WRONG_INPUT;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,9 +13,7 @@ public class InputHandler {
     public List<Map<String, String>> toOrderData(String input) {
         List<Map<String, String>> list = new LinkedList<>();
         String[] orders = input.split(",");
-        for (String order : orders) {
-            list.add(toMap(order));
-        }
+        Arrays.stream(orders).forEach(order -> list.add(toMap(order)));
         return list;
     }
 
@@ -32,7 +32,7 @@ public class InputHandler {
         if (isNo(input)) {
             return false;
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(WRONG_INPUT.getMessage());
     }
 
     private boolean isYes(String input) {

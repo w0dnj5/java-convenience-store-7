@@ -14,7 +14,7 @@ class ProductTest {
 
     @ParameterizedTest
     @MethodSource("receiveFreeCountTestProductProvider")
-    @DisplayName("구매 개수 따라 제품을 추가로 증정 받을 수 있는 지 확인")
+    @DisplayName("구매 개수 따라 제품을 추가로 증정 받을 수 있는 지 확인한다.")
     void calculateMoreBonusTest(String today, Product product, int buyCount, int expectedCount) {
         LocalDate now = LocalDate.parse(today);
 
@@ -39,7 +39,7 @@ class ProductTest {
 
     @ParameterizedTest
     @MethodSource("noPromotionApplyCountTestProductProvider")
-    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인")
+    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인한다.")
     void calculateNoPromotionApplyTest(String today, Product product, int buyCount, int expectedCount) {
         LocalDate now = LocalDate.parse(today);
 
@@ -64,7 +64,7 @@ class ProductTest {
 
     @ParameterizedTest
     @MethodSource("calculateTotalBonusTestProvider")
-    @DisplayName("증정 받는 상품 개수 계산")
+    @DisplayName("증정 받는 상품 개수 계산한다.")
     void calculateTotalBonusTest(String today, Product product, int buyCount, int expectedCount) {
         LocalDate now = LocalDate.parse(today);
 

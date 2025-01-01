@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class PromotionTest {
 
     @ParameterizedTest
-    @DisplayName("이벤트 기간 내 프로모션 제품을 추가로 받을 수 있는 개수가 올바른 지 테스트")
+    @DisplayName("이벤트 기간 내 프로모션 제품을 추가로 받을 수 있는 개수가 올바른 지 확인한다.")
     @MethodSource("receiveFreeCountTestPromotionProvider")
     void calculateMoreBonusTest(String today, Promotion promotion, int buyCount, int expectedCount) {
         LocalDate now = LocalDate.parse(today);
@@ -34,7 +34,7 @@ class PromotionTest {
     }
 
     @ParameterizedTest
-    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인")
+    @DisplayName("구매 개수가 프로모션 재고를 초과 시 몇 개를 정가로 구매해야하는 지 확인한다.")
     @MethodSource("noPromotionApplyCountTestPromotionProvider")
     void calculateNoPromotionApplyTest(String today, Promotion promotion, int buyCount, int quantity,
                                        int expectedCount) {
