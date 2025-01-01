@@ -24,15 +24,15 @@ public class Order {
         }
     }
 
-    public int getReceiveFreeCount() {
+    public int calculateMoreBonus() {
         return products.stream()
-                .mapToInt(product -> product.getReceiveFreeCount(date, count))
+                .mapToInt(product -> product.calculateMoreBonus(date, count))
                 .sum();
     }
 
-    public int getNoPromotionApplyCount() {
+    public int calculateNoPromotionApply() {
         return products.stream()
-                .mapToInt(product -> product.getNoPromotionApplyCount(date, count))
+                .mapToInt(product -> product.calculateNoPromotionApply(date, count))
                 .sum();
     }
 
@@ -40,31 +40,40 @@ public class Order {
         return products.getFirst().getName();
     }
 
-    public void addReceiveFreeCount() {
+    public int getCount() {
+        return count;
+    }
+
+    public int getTotalPrice() {
+        Product product = products.getFirst();
+        return count * product.getPrice();
+    }
+
+    public void addMoreBonus() {
         Product product = getFirst();
         if (product.hasPromotion()) {
-            count += product.getReceiveFreeCount(date, count);
+            count += product.calculateMoreBonus(date, count);
         }
     }
 
-    public void dropNoPromotionApplyCount() {
+    public void dropNoPromotionApply() {
         Product product = getFirst();
         if (product.hasPromotion()) {
-            count -= product.getNoPromotionApplyCount(date, count);
+            count -= product.calculateNoPromotionApply(date, count);
         }
     }
 
-    public int calculateReceiveFreeCount() {
+    public int calculateTotalBonus() {
         Product product = getFirst();
         if (product.hasPromotion()) {
-            return product.calculateReceiveFreeCount(count);
+            return product.calculateTotalBonus(date, count);
         }
         return 0;
     }
 
-    public int calculateDiscountPrice() {
+    public int calculateDiscount() {
         Product product = getFirst();
-        return calculateReceiveFreeCount() * product.getPrice();
+        return calculateTotalBonus() * product.getPrice() * -1;
     }
 
     public void apply() {
@@ -77,5 +86,14 @@ public class Order {
 
     private Product getFirst() {
         return products.getFirst();
+    }
+
+    @Override
+    public String toString() {
+        return getProductName() + "\t\t" + count + "\t\t" + String.format("%,3d", getTotalPrice());
+    }
+
+    public String formatBonus() {
+        return getProductName() + "\t\t" + calculateTotalBonus() + "\t\t" + String.format("%,3d", calculateDiscount());
     }
 }

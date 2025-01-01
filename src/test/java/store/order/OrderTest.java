@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
 
     @Test
-    void calculateReceiveFreeCount() {
+    void calculateTotalBonus() {
     }
 
     @Test
-    void calculateDiscountPrice() {
+    void calculateDiscount() {
     }
 }

@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import store.order.Order;
 import store.product.Product;
 import store.promotion.Promotion;
+import store.receipt.Receipt;
 import store.repository.Products;
 import store.repository.Promotions;
 import store.utils.FileHandler;
@@ -27,18 +28,21 @@ public class Controller {
         inputView = new InputView();
         inputHandler = new InputHandler();
         outputView = new OutputView();
-
         Promotions promotions = new Promotions();
         Products products = new Products();
         promotions.addAll(toPromotions(fileHandler.convert("src/main/resources/promotions.md")));
         products.addAll(toProducts(promotions, fileHandler.convert("src/main/resources/products.md")));
+
         do {
-            outputView.showAllProducts(products.toString());
+            outputView.showAllProducts(products);
             List<Order> orders = repeatUntilSuccess(
                     () -> toOrders(products, inputHandler.toOrderData(inputView.requestOrders())));
             orders.forEach(this::progress);
-            break;
-        } while (true);
+            Receipt receipt = repeatUntilSuccess(
+                    () -> new Receipt(orders, inputHandler.toYesOrNo(inputView.requestMembershipApply())));
+            outputView.showReceipt(receipt);
+            receipt.apply();
+        } while (repeatUntilSuccess(() -> inputHandler.toYesOrNo(inputView.requestForAnotherPurchase())));
     }
 
     private List<Promotion> toPromotions(List<Map<String, String>> data) {
@@ -75,30 +79,28 @@ public class Controller {
     }
 
     private void progress(Order order) {
-        requestReceiveFree(order);
-        requestNoPromotionApplyBuy(order);
+        requestMoreBonusApply(order);
+        requestNoPromotionApply(order);
     }
 
-    private void requestReceiveFree(Order order) {
-        int count = order.getReceiveFreeCount();
+    private void requestMoreBonusApply(Order order) {
+        int count = order.calculateMoreBonus();
         if (count > 0) {
-            String name = order.getProductName();
             boolean result = repeatUntilSuccess(
-                    () -> inputHandler.toYesOrNo(inputView.requestReceiveFree(name, count)));
+                    () -> inputHandler.toYesOrNo(inputView.requestMoreBonusApply(order)));
             if (result) {
-                order.addReceiveFreeCount();
+                order.addMoreBonus();
             }
         }
     }
 
-    private void requestNoPromotionApplyBuy(Order order) {
-        int count = order.getNoPromotionApplyCount();
+    private void requestNoPromotionApply(Order order) {
+        int count = order.calculateNoPromotionApply();
         if (count > 0) {
-            String name = order.getProductName();
             boolean result = repeatUntilSuccess(
-                    () -> inputHandler.toYesOrNo(inputView.requestNoPromotionApply(name, count)));
+                    () -> inputHandler.toYesOrNo(inputView.requestNoPromotionApply(order)));
             if (!result) {
-                order.dropNoPromotionApplyCount();
+                order.dropNoPromotionApply();
             }
         }
     }

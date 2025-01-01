@@ -22,14 +22,14 @@ public class Promotion {
         return name;
     }
 
-    public int getReceiveFreeCount(LocalDate date, int count) {
+    public int calculateMoreBonus(LocalDate date, int count) {
         if (isInPeriod(date) && (count + get) % (buy + get) == 0) {
             return get;
         }
         return 0;
     }
 
-    public int getNoPromotionApplyCount(LocalDate date, int count, int quantity) {
+    public int calculateNoPromotionApply(LocalDate date, int count, int quantity) {
         if (isInPeriod(date)) {
             return count - (quantity / (buy + get) * (buy + get));
         }
@@ -40,12 +40,10 @@ public class Promotion {
         return !(date.isBefore(startDate) || date.isAfter(endDate));
     }
 
-    public int calculatePromotionGetCount(int buyCount) {
-        return (buyCount / (buy + get)) * get;
-    }
-
-    @Override
-    public String toString() {
-        return name;
+    public int calculateTotalBonus(LocalDate date, int buyCount) {
+        if (isInPeriod(date)) {
+            return (buyCount / (buy + get)) * get;
+        }
+        return 0;
     }
 }

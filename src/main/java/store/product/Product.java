@@ -33,41 +33,52 @@ public class Product {
         return promotion != null;
     }
 
-    public int getReceiveFreeCount(LocalDate date, int count) {
+    public int calculateMoreBonus(LocalDate date, int count) {
         if (hasPromotion() && count <= quantity) {
-            return promotion.getReceiveFreeCount(date, count);
+            return promotion.calculateMoreBonus(date, count);
         }
         return 0;
     }
 
-    public int getNoPromotionApplyCount(LocalDate date, int count) {
+    public int calculateNoPromotionApply(LocalDate date, int count) {
         if (hasPromotion() && count > quantity) {
-            return promotion.getNoPromotionApplyCount(date, count, quantity);
+            return promotion.calculateNoPromotionApply(date, count, quantity);
         }
         return 0;
     }
 
-    public int calculateReceiveFreeCount(int count) {
-        if (quantity < count) {
-            return promotion.calculatePromotionGetCount(quantity);
+    public int calculateTotalBonus(LocalDate date, int count) {
+        if (hasPromotion()) {
+            return promotion.calculateTotalBonus(date, Math.min(quantity, count));
         }
-        return promotion.calculatePromotionGetCount(count);
+        return 0;
     }
 
     public int apply(int count) {
         if (quantity < count) {
+            count = count - quantity;
             quantity = 0;
-            return count - quantity;
+            return count;
         }
         return quantity -= count;
     }
 
     @Override
     public String toString() {
-        String contents = String.format("- %s %,3d원 %d개 ", name, price, quantity);
-        if (promotion != null) {
-            contents += promotion.toString();
+        return String.join(" ", "-", String.format("%s %,3d원", name, price), formatQuantity(), formatPromotion());
+    }
+
+    public String formatQuantity() {
+        if (quantity == 0) {
+            return "재고 없음";
         }
-        return contents;
+        return String.format("%d개", quantity);
+    }
+
+    public String formatPromotion() {
+        if (hasPromotion()) {
+            return promotion.getName();
+        }
+        return "";
     }
 }
