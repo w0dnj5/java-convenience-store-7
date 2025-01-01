@@ -32,13 +32,13 @@ public class Controller {
         Products products = new Products();
         promotions.addAll(toPromotions(fileHandler.convert("src/main/resources/promotions.md")));
         products.addAll(toProducts(promotions, fileHandler.convert("src/main/resources/products.md")));
-        while (true) {
+        do {
             outputView.showAllProducts(products.toString());
             List<Order> orders = repeatUntilSuccess(
                     () -> toOrders(products, inputHandler.toOrderData(inputView.requestOrders())));
             orders.forEach(this::progress);
             break;
-        }
+        } while (true);
     }
 
     private List<Promotion> toPromotions(List<Map<String, String>> data) {

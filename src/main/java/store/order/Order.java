@@ -37,26 +37,45 @@ public class Order {
     }
 
     public String getProductName() {
-        Product product = products.stream()
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
-        return product.getName();
+        return products.getFirst().getName();
     }
 
     public void addReceiveFreeCount() {
-        Product promotionProduct = findPromotionProduct();
-        count += promotionProduct.getReceiveFreeCount(date, count);
+        Product product = getFirst();
+        if (product.hasPromotion()) {
+            count += product.getReceiveFreeCount(date, count);
+        }
     }
 
     public void dropNoPromotionApplyCount() {
-        Product promotionProduct = findPromotionProduct();
-        count -= promotionProduct.getNoPromotionApplyCount(date, count);
+        Product product = getFirst();
+        if (product.hasPromotion()) {
+            count -= product.getNoPromotionApplyCount(date, count);
+        }
     }
 
-    private Product findPromotionProduct() {
-        return products.stream()
-                .filter(Product::hasPromotion)
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+    public int calculateReceiveFreeCount() {
+        Product product = getFirst();
+        if (product.hasPromotion()) {
+            return product.calculateReceiveFreeCount(count);
+        }
+        return 0;
+    }
+
+    public int calculateDiscountPrice() {
+        Product product = getFirst();
+        return calculateReceiveFreeCount() * product.getPrice();
+    }
+
+    public void apply() {
+        for (Product p : products) {
+            if (count != 0) {
+                count = p.apply(count);
+            }
+        }
+    }
+
+    private Product getFirst() {
+        return products.getFirst();
     }
 }

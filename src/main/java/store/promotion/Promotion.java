@@ -40,6 +40,10 @@ public class Promotion {
         return !(date.isBefore(startDate) || date.isAfter(endDate));
     }
 
+    public int calculatePromotionGetCount(int buyCount) {
+        return (buyCount / (buy + get)) * get;
+    }
+
     @Override
     public String toString() {
         return name;

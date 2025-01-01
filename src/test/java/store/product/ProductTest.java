@@ -61,4 +61,28 @@ class ProductTest {
                         11, 0)
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("calculateReceiveFreeCountTestProvider")
+    @DisplayName("증정 받는 상품 개수 계산")
+    void calculateReceiveFreeCountTest(String today, Product product, int buyCount, int expectedCount) {
+        LocalDate now = LocalDate.parse(today);
+
+        assertThat(product.calculateReceiveFreeCount(buyCount)).isEqualTo(expectedCount);
+    }
+
+    static Stream<Arguments> calculateReceiveFreeCountTestProvider() {
+        return Stream.of(
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10,
+                                new Promotion("탄산2+1", 2, 1, LocalDate.parse("2024-01-01"),
+                                        LocalDate.parse("2024-12-31"))),
+                        8, 2),
+                Arguments.of("2024-12-11",
+                        new Product("콜라", 1000, 10,
+                                new Promotion("탄산2+1", 2, 1, LocalDate.parse("2024-01-01"),
+                                        LocalDate.parse("2024-12-31"))),
+                        12, 3)
+        );
+    }
 }

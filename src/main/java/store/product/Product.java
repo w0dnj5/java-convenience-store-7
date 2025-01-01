@@ -25,6 +25,10 @@ public class Product {
         return quantity;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
     public boolean hasPromotion() {
         return promotion != null;
     }
@@ -43,8 +47,19 @@ public class Product {
         return 0;
     }
 
-    public Promotion getPromotion() {
-        return promotion;
+    public int calculateReceiveFreeCount(int count) {
+        if (quantity < count) {
+            return promotion.calculatePromotionGetCount(quantity);
+        }
+        return promotion.calculatePromotionGetCount(count);
+    }
+
+    public int apply(int count) {
+        if (quantity < count) {
+            quantity = 0;
+            return count - quantity;
+        }
+        return quantity -= count;
     }
 
     @Override
